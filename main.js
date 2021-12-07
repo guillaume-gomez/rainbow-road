@@ -1,4 +1,4 @@
-let canvas, context, width, height, updateRef, points, offset, spacing, gradient;
+let canvas, context, width, height, updateRef, points, offset, spacing;
 const colors = ["#c90000", "#f70000", "#ff3d00", "#ff8600", "#ffc400", "#4ddb73", "#00aa9f", "#006bc5", "#6004db", "#6804b2", "#9204a1", "#c8009b", "#ff289e"];
 const colorsVariant = ["#e00000", "#ff1600", "#ff5400", "#ffa100", "#ffdd00", "#52ec52", "#00c29f", "#007fdb", "#6804ef", "#7500bc", "#a600a2", "#e4009f", "#ff289e"];
 
@@ -16,7 +16,7 @@ function init() {
       const dist = Math.abs(j - points[0].length / 2)
       points[i][j] = {
         x: 4 + j * spacing,
-        y: -(dist*dist) + 30, 
+        y: -(dist*dist) + 50, 
         z: -i * 10
       }
     }
@@ -39,7 +39,7 @@ function update(time) {
      for(let k = 0; k < arr.length; k++) {
       const dist = Math.abs(k - arr.length / 2)
       arr[k].z = 0
-      arr[k].y = Math.random() * -(dist*dist) + 30;
+      arr[k].y = Math.random() * -(dist*dist) + 50;
      }
      points.unshift( arr )
     }
