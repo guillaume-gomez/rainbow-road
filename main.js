@@ -44,12 +44,13 @@ function onLoad() {
       }
     });
   }
-
-  histogramCanvas = document.getElementById("histogram");
-  histogramContext = histogramCanvas.getContext('2d');
-  drawHistogram();
-
   init();
+
+  //debug
+  //histogramCanvas = document.getElementById("histogram");
+  //histogramContext = histogramCanvas.getContext('2d');
+  //drawHistogram();
+
 }
 
 function init() {
@@ -158,7 +159,8 @@ function colorByPoints(arrayOfColor, index) {
   return arrayOfColor[index / nbPointsByColor];
 }
 
-function drawHistogram() {
+
+/*function drawHistogram() {
   draw = requestAnimationFrame(drawHistogram);
   histogramContext.fillStyle = 'rgb(0, 0, 0)';
   histogramContext.fillRect(0, 0, histogramCanvas.width, histogramCanvas.height);
@@ -179,4 +181,4 @@ function drawHistogram() {
 
     x += barWidth + 1;
   }
-}
+}*/
