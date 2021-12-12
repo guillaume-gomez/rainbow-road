@@ -7,12 +7,13 @@ let updateRef;
 let points;
 let offset;
 let spacing;
+let nbPointsByColor = 3;
 
 const colors = ["#c90000", "#f70000", "#ff3d00", "#ff8600", "#ffc400", "#4ddb73", "#00aa9f", "#006bc5", "#6004db", "#6804b2", "#9204a1", "#c8009b", "#ff289e"];
 const colorsVariant = ["#e00000", "#ff1600", "#ff5400", "#ffa100", "#ffdd00", "#52ec52", "#00c29f", "#007fdb", "#6804ef", "#7500bc", "#a600a2", "#e4009f", "#ff289e"];
 
 // sounds arguments
-let pinch = 150;
+let pinch = 125;
 let audioContext;
 let source;
 let analyser;
@@ -57,11 +58,11 @@ function init() {
   canvas.height = height = window.innerHeight;
   context = canvas.getContext('2d')
   context.translate(width / 2, height / 2)
-  spacing = (80 * width) / 1920;
-  points = Array(60).fill(0).map(_ => Array((colors.length + 1) ).fill(0))
+  spacing = (40 * width) / 1920;
+  points = Array(60).fill(0).map(_ => Array((colors.length + 1) * nbPointsByColor ).fill(0))
   for (let i = 0; i < points.length; i++) {
     for (let j = 0; j < points[0].length; j++) {
-      const dist = Math.abs(j - points[0].length / 2)
+      const dist = Math.abs(j - points[0].length / 2) / nbPointsByColor;
       points[i][j] = {
         x: 4 + j * spacing,
         y: -(dist*dist) + pinch,
@@ -93,8 +94,8 @@ function update(time) {
       //console.log(dataArray)
       let arr = points.pop();
       for(let k = 0; k < arr.length; k++) {
-        const dist = Math.abs(k - arr.length / 2);
-        const hauteur = dataArray ? -(dataArray[k] /1.75) + pinch : Math.random() * -(dist*dist) + pinch;
+        const dist = Math.abs(k - arr.length / 2) / nbPointsByColor;
+        const hauteur = dataArray ? -(dataArray[k] /1.5) + pinch : Math.random() * -(dist*dist) + pinch;
         //console.log(hauteur)
         arr[k].y = hauteur;
         arr[k].z = 0;
@@ -119,8 +120,8 @@ function show() {
       context.lineTo((points[i+1][j].x - offset) * nextSize, points[i+1][j].y * nextSize);
       context.closePath();
       const color = 300 + points[i][j].z;
-      context.fillStyle = colors[j];
-      context.strokeStyle = colorsVariant[j];
+      context.fillStyle = colorByPoints(colors, j);"white"//colors[j];
+      context.strokeStyle = colorByPoints(colorsVariant, j); "black"//colorsVariant[j];
       context.fill();
       context.stroke();
     } 
@@ -153,14 +154,8 @@ function getLocalStream() {
     });
 }
 
-function avgByPosition(index, arrayBuffer) {
-  const slice = arrayBuffer.slice(index * audioLength, (index + 1) * audioLength);
-  const sum = slice.reduce((previousValue, currentValue) => previousValue + currentValue, 0);
-  if(sum === 0) {
-    return 0
-  }
-
-  return sum / slice.length;
+function colorByPoints(arrayOfColor, index) {
+  return arrayOfColor[index / nbPointsByColor];
 }
 
 function drawHistogram() {
@@ -184,13 +179,4 @@ function drawHistogram() {
 
     x += barWidth + 1;
   }
-  /*let x = 0;
-  const barWidth = histogramCanvas.width/(points[0].length + 1);
-  for(let i = 0; i < points[0].length; i++) {
-    barHeight = dataArray[i] //avgByPosition(i, dataArray);
-    histogramContext.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
-    histogramContext.fillRect(x, histogramCanvas.height - barHeight/2, barWidth, barHeight);
-
-    x += barWidth + 1;
-  }*/
 }
