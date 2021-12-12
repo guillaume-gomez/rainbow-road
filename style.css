@@ -8,7 +8,7 @@ html, body {
   background-image: linear-gradient(to bottom, #82addb 0%,#ebb2b1 100%);
 }
 
-canvas {
+#canvas {
   display: block;
 }
 
@@ -19,4 +19,14 @@ canvas {
   padding: 1rem;
   background: black;
   opacity: 0.85;
+}
+
+
+#histogram {
+  position: absolute;
+  opacity: 0.85;
+  top: 10px;
+  left: 10px;
+  width: 250px;
+  height: 100px;
 }
