@@ -8,6 +8,8 @@ let points;
 let offset;
 let spacing;
 let nbPointsByColor = 3;
+let elapsedTime = 0;
+let speed = 0.5;
 
 const colors = ["#c90000", "#f70000", "#ff3d00", "#ff8600", "#ffc400", "#4ddb73", "#00aa9f", "#006bc5", "#6004db", "#6804b2", "#9204a1", "#c8009b", "#ff289e"];
 const colorsVariant = ["#e00000", "#ff1600", "#ff5400", "#ffa100", "#ffdd00", "#52ec52", "#00c29f", "#007fdb", "#6804ef", "#7500bc", "#a600a2", "#e4009f", "#ff289e"];
@@ -44,6 +46,14 @@ function onLoad() {
       }
     });
   }
+
+  const range = document.getElementById("speed");
+  if(range) {
+    range.addEventListener("change", (event) => {
+      speed = parseFloat(event.target.value);
+    });
+  }
+
   init();
 
   //debug
@@ -72,12 +82,19 @@ function init() {
     }
   }
   offset = points[0].length * spacing / 2;
+  // on resize. init is call
+  if(updateRef) {
+    window.cancelAnimationFrame(updateRef);
+  }
   update(0)
 }
 
 
 
 function update(time) {
+  updateRef = requestAnimationFrame(update);
+  
+  elapsedTime = time - elapsedTime;
   if(analyser && dataArray) {
     analyser.getByteFrequencyData(dataArray);
   }
@@ -86,7 +103,7 @@ function update(time) {
   for (let i = 0; i < points.length; i++) {
     let gone = false
     for (let j = 0; j < points[0].length; j++) {
-      points[i][j].z -= 0.5
+      points[i][j].z -= speed;
       if (points[i][j].z < -300) {
         gone = true
       }
@@ -105,7 +122,6 @@ function update(time) {
     }
   }
   show()
-  updateRef = requestAnimationFrame(update)
 }
 
 function show() {
@@ -121,16 +137,14 @@ function show() {
       context.lineTo((points[i+1][j].x - offset) * nextSize, points[i+1][j].y * nextSize);
       context.closePath();
       const color = 300 + points[i][j].z;
-      context.fillStyle = colorByPoints(colors, j);"white"//colors[j];
-      context.strokeStyle = colorByPoints(colorsVariant, j); "black"//colorsVariant[j];
+      context.fillStyle = colorByPoints(colors, j);
+      context.strokeStyle = colorByPoints(colorsVariant, j);
       context.fill();
       context.stroke();
     } 
   }
 }
 
-window.onload = onLoad;
-window.onresize = init;
 
 
 function getLocalStream() {
@@ -182,3 +196,29 @@ function colorByPoints(arrayOfColor, index) {
     x += barWidth + 1;
   }
 }*/
+
+
+window.onload = onLoad;
+window.onresize = init;
+window.addEventListener('dblclick', () =>
+{
+    if(!canvas) {
+        return;
+    }
+
+    if(!document.fullscreenElement)
+    {
+        if(canvas.requestFullscreen)
+        {
+            canvas.requestFullscreen()
+        }
+    }
+    else
+    {
+        if(document.exitFullscreen)
+        {
+            document.exitFullscreen()
+        }
+        
+    }
+});
